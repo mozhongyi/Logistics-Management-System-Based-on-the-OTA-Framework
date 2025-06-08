@@ -2,28 +2,28 @@
 #include "SpaceMgrController.h"
 #include "../../service/space/SpaceService.h"
 
-// æ·»åŠ åœºåœ°æ‰§è¡Œå‡½æ•°
+// Ìí¼Ó³¡µØÖ´ĞĞº¯Êı
 StringJsonVO::Wrapper SpaceMgrController::execAddSpace(const SpaceAddDTO::Wrapper& dto, const PayloadDTO& payload)
 {
-	// å®šä¹‰è¿”å›æ•°æ®å¯¹è±¡
+	// ¶¨Òå·µ»ØÊı¾İ¶ÔÏó
 	auto jvo = StringJsonVO::createShared();
-	// å‚æ•°æ ¡éªŒ
-	// éç©ºæ ¡éªŒ
+	// ²ÎÊıĞ£Ñé
+	// ·Ç¿ÕĞ£Ñé
 	if (!dto->name || !dto->feeMoney || !dto->adminName || !dto->tel || !dto->state)
 	{
 		jvo->init(nullptr, RS_PARAMS_INVALID);
 		return jvo;
 	}
-	// æœ‰æ•ˆå€¼æ ¡éªŒ
+	// ÓĞĞ§ÖµĞ£Ñé
 	if (dto->feeMoney < 0 || dto->name->empty() || dto->adminName->empty() || dto->tel->empty() || dto->state->empty())
 	{
 		jvo->init(nullptr, RS_PARAMS_INVALID);
 		return jvo;
 	}
 
-	// å®šä¹‰ä¸€ä¸ªService
+	// ¶¨ÒåÒ»¸öService
 	SpaceService service;
-	// æ‰§è¡Œæ•°æ®æ–°å¢
+	// Ö´ĞĞÊı¾İĞÂÔö
 	dto->setPayload(&payload);
 	std::string id = service.addSpace(dto);
 	if (id != "") {
@@ -33,24 +33,24 @@ StringJsonVO::Wrapper SpaceMgrController::execAddSpace(const SpaceAddDTO::Wrappe
 	{
 		jvo->fail("");
 	}
-	//å“åº”ç»“æœ
+	//ÏìÓ¦½á¹û
 	return jvo;
 }
 
-// ä¿®æ”¹åœºåœ°æ‰§è¡Œå‡½æ•°
+// ĞŞ¸Ä³¡µØÖ´ĞĞº¯Êı
 StringJsonVO::Wrapper SpaceMgrController::execModifySpace(const SpaceUpdateDTO::Wrapper& dto, const PayloadDTO& payload)
 {
-	// å®šä¹‰è¿”å›æ•°æ®å¯¹è±¡
+	// ¶¨Òå·µ»ØÊı¾İ¶ÔÏó
 	auto jvo = StringJsonVO::createShared();
-	// å‚æ•°æ ¡éªŒ
+	// ²ÎÊıĞ£Ñé
 	if (!dto->spaceId || !dto->adminName || !dto->feeMoney || !dto->tel || !dto->name || !dto->state)
 	{
 		jvo->init(nullptr, RS_PARAMS_INVALID);
 		return jvo;
 	}
-	// å®šä¹‰ä¸€ä¸ªService
+	// ¶¨ÒåÒ»¸öService
 	SpaceService service;
-	// æ‰§è¡Œæ•°æ®ä¿®æ”¹
+	// Ö´ĞĞÊı¾İĞŞ¸Ä
 	dto->setPayload(&payload);
 	if (service.updateSpace(dto)) {
 		jvo->success(dto->spaceId);
@@ -59,24 +59,24 @@ StringJsonVO::Wrapper SpaceMgrController::execModifySpace(const SpaceUpdateDTO::
 	{
 		jvo->fail(dto->spaceId);
 	}
-	// å“åº”ç»“æœ
+	// ÏìÓ¦½á¹û
 	return jvo;
 }
 
-// åˆ é™¤åœºåœ°æ‰§è¡Œå‡½æ•°
+// É¾³ı³¡µØÖ´ĞĞº¯Êı
 ListJsonVO<String>::Wrapper SpaceMgrController::execRemoveSpace(const List<String>& ids)
 {
-	// å®šä¹‰è¿”å›æ•°æ®å¯¹è±¡
+	// ¶¨Òå·µ»ØÊı¾İ¶ÔÏó
 	auto jvo = ListJsonVO<String>::createShared();
-	// å‚æ•°æ ¡éªŒ
+	// ²ÎÊıĞ£Ñé
 	if (ids->empty())
 	{
 		jvo->init(nullptr, RS_PARAMS_INVALID);
 		return jvo;
 	}
-	// å®šä¹‰ä¸€ä¸ªService
+	// ¶¨ÒåÒ»¸öService
 	SpaceService service;
-	// æ‰§è¡Œæ•°æ®åˆ é™¤
+	// Ö´ĞĞÊı¾İÉ¾³ı
 	if (service.removeSpace(ids)) {
 		jvo->success(ids);
 	}
@@ -84,6 +84,6 @@ ListJsonVO<String>::Wrapper SpaceMgrController::execRemoveSpace(const List<Strin
 	{
 		jvo->fail(nullptr);
 	}
-	// å“åº”ç»“æœ
+	// ÏìÓ¦½á¹û
 	return jvo;
 }

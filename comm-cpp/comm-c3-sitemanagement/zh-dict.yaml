@@ -1,14 +1,14 @@
 ﻿venue:
   get:
-    summary: 分页查询场馆
+    summary: 获取场馆列表（条件+分页）
   query-by-id:
     summary: 通过 ID 查询场馆
   post:
     summary: 新增场馆
   put:
-    summary: 修改场馆信息
+    summary: 修改场馆
   delete:
-    summary: 删除场馆支持批量
+    summary: 删除场馆
   field:
     venueId: 场馆编号                       # CommunityVenueDTO 中定义:contentReference[oaicite:9]{index=9}
     name: 场馆名称                         # CommunityVenueAddDTO 中定义:contentReference[oaicite:10]{index=10}
@@ -21,11 +21,11 @@
     venueIds: 场馆编号列表                  # CommunityVenueDeleteDTO 中定义:contentReference[oaicite:17]{index=17}
 space:
  add-space:
-  summary: 添加场地接口
+  summary: 添加场地
  delete-space: 
-  summary: 删除场地接口
+  summary: 删除场地
  modify-space:
-  summary: 修改场地接口
+  summary: 修改场地
  field:
   name: 场地名称
   feeMoney: 每小时费用
@@ -39,41 +39,28 @@ space:
   createTime: 创建时间
   statusCd: 数据状态
   venueId: 场馆Id
+
+
+#lxian_yu
 CommunitySpaceMgr:
  get:
-  summary: 获取场地列表  
+  summary: 获取场地列表（条件+分页）
   time: 获取场地开放时间
  put:
   summary: 修改场地开放时间
  field:
   name: 场地名称
   space_id: 场地编号
-  community_id: 场馆编号
+  community_id: 社区编号
   start_time: 开始时间
   end_time: 结束时间
   admin_name: 管理员
   tel: 管理员电话
-  t0: 0点
-  t1: 1点
-  t2: 2点
-  t3: 3点
-  t4: 4点
-  t5: 5点
-  t6: 6点
-  t7: 7点
-  t8: 8点
-  t9: 9点
-  t10: 10点
-  t11: 11点
-  t12: 12点
-  t13: 13点
-  t14: 14点
-  t15: 15点
-  t16: 16点
-  t17: 17点
-  t18: 18点
-  t19: 19点
-  t20: 20点
-  t21: 21点
-  t22: 22点
-  t23: 23点
+  status_cd: 数据状态
+  venue_id: 场馆编号
+  create_time: 创建时间
+  b_id: b编号
+  state: 可预约状态
+  hours: 几时
+  is_open: 是否可预约
+  time_id: 时间编号

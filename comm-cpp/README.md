@@ -41,7 +41,6 @@
   - Linux系统下面用到的动态库
 
 ## 4 环境搭建参考
-
 静态库：
 
 https://learn.microsoft.com/zh-cn/cpp/build/walkthrough-creating-and-using-a-static-library-cpp?view=msvc-170
@@ -74,6 +73,7 @@ https://learn.microsoft.com/zh-cn/cpp/build/walkthrough-header-units?view=msvc-1
 - 如果架构能够正常运行，接下来就需要在解决方案中，新增项目来完成你的业务功能。
 
 - 你可以使用`copy-resources.bat`项目快速构建工具创建你项目模块。
+
 
 ### 5.1 配置项目模块
 
@@ -268,13 +268,13 @@ int main() {
     DbInit::initDbPool(
         DBConfig("root", "123456", "test", "192.168.220.128", 3306, 5));
     // 启动HTTP服务器
-    HttpServer::startServer("8090",
-        [=](Endpoints* doc, HttpRouter* router) {
-            //设置路由，可以参考Router的实现
-        });
-    //释放数据库连接
-    DbInit::releasePool();
-    return 0;
+	HttpServer::startServer("8090",
+		[=](Endpoints* doc, HttpRouter* router) {
+			//设置路由，可以参考Router的实现
+		});
+	//释放数据库连接
+	DbInit::releasePool();
+	return 0;
 }
 ```
 
@@ -290,12 +290,12 @@ using namespace oatpp::web::protocol::http::outgoing;
 // 实现跨域请求拦截
 std::shared_ptr<oatpp::web::server::interceptor::RequestInterceptor::OutgoingResponse> CrosRequestInterceptor::intercept(const std::shared_ptr<IncomingRequest>& request)
 {
-    return nullptr;
+	return nullptr;
 }
 // 实现跨域响应拦截
 std::shared_ptr<oatpp::web::server::interceptor::ResponseInterceptor::OutgoingResponse> CrosResponseInterceptor::intercept(const std::shared_ptr<IncomingRequest>& request, const std::shared_ptr<OutgoingResponse>& response)
 {
-    return response;
+	return response;
 }
 // 凭证检测拦截器构造初始化一些内容
 CheckRequestInterceptor::CheckRequestInterceptor(const std::shared_ptr<oatpp::data::mapping::ObjectMapper>& objectMapper)
@@ -304,7 +304,7 @@ CheckRequestInterceptor::CheckRequestInterceptor(const std::shared_ptr<oatpp::da
 // 实现凭证检测拦截处理逻辑
 std::shared_ptr<oatpp::web::server::interceptor::RequestInterceptor::OutgoingResponse> CheckRequestInterceptor::intercept(const std::shared_ptr<IncomingRequest>& request)
 {
-    return nullptr;
+	return nullptr;
 }
 ```
 
@@ -318,31 +318,31 @@ std::shared_ptr<oatpp::web::server::interceptor::RequestInterceptor::OutgoingRes
 class ServerInfo
 {
 private:
-    // 成员初始化
-    void init() {
-        this->dbPort = 3306;
-        this->dbMax = 25;
-        // 加载中文词典
-        zhDictNode = YAML::LoadFile("zh-dict.yaml");
-    }
-    // 定义单例
-    DECLARE_INSTANCE(ServerInfo);
-    // 服务器端口
-    CC_SYNTHESIZE(std::string, serverPort, ServerPort);
-    // Nacos配置参数
-    CC_SYNTHESIZE(std::string, nacosAddr, NacosAddr);
-    CC_SYNTHESIZE(std::string, nacosNs, NacosNs);
-    CC_SYNTHESIZE(std::string, regIp, RegIp);
-    CC_SYNTHESIZE(std::string, serviceName, ServiceName);
-    // 数据库连接信息
-    CC_SYNTHESIZE(std::string, dbUsername, DbUsername);
-    CC_SYNTHESIZE(std::string, dbPassword, DbPassword);
-    CC_SYNTHESIZE(std::string, dbName, DbName);
-    CC_SYNTHESIZE(std::string, dbHost, DbHost);
-    CC_SYNTHESIZE(int, dbPort, DbPort);
-    CC_SYNTHESIZE(int, dbMax, DbMax);
-    // 定义一个中文字典缓存
-    CC_SYNTHESIZE_CR_GET(YAML::Node, zhDictNode, ZhDictNode);
+	// 成员初始化
+	void init() {
+		this->dbPort = 3306;
+		this->dbMax = 25;
+		// 加载中文词典
+		zhDictNode = YAML::LoadFile("zh-dict.yaml");
+	}
+	// 定义单例
+	DECLARE_INSTANCE(ServerInfo);
+	// 服务器端口
+	CC_SYNTHESIZE(std::string, serverPort, ServerPort);
+	// Nacos配置参数
+	CC_SYNTHESIZE(std::string, nacosAddr, NacosAddr);
+	CC_SYNTHESIZE(std::string, nacosNs, NacosNs);
+	CC_SYNTHESIZE(std::string, regIp, RegIp);
+	CC_SYNTHESIZE(std::string, serviceName, ServiceName);
+	// 数据库连接信息
+	CC_SYNTHESIZE(std::string, dbUsername, DbUsername);
+	CC_SYNTHESIZE(std::string, dbPassword, DbPassword);
+	CC_SYNTHESIZE(std::string, dbName, DbName);
+	CC_SYNTHESIZE(std::string, dbHost, DbHost);
+	CC_SYNTHESIZE(int, dbPort, DbPort);
+	CC_SYNTHESIZE(int, dbMax, DbMax);
+	// 定义一个中文字典缓存
+	CC_SYNTHESIZE_CR_GET(YAML::Node, zhDictNode, ZhDictNode);
 };
 ```
 
@@ -364,105 +364,105 @@ private:
  * 前缀与真实值之间使用=分隔
  */
 void parseServerArgs(int argc, char* argv[]) {
-    // 服务器端口
-    std::string serverPort = "8090";
-    // 数据库连接信息
-    std::string dbUsername = "";
-    std::string dbPassword = "";
-    std::string dbName = "";
-    std::string dbHost = "";
-    int dbPort = -1;
-    int dbMax = -1;
+	// 服务器端口
+	std::string serverPort = "8090";
+	// 数据库连接信息
+	std::string dbUsername = "";
+	std::string dbPassword = "";
+	std::string dbName = "";
+	std::string dbHost = "";
+	int dbPort = -1;
+	int dbMax = -1;
 
-    // 开始解析
-    int currIndex = 1;
-    int setDbParamNum = 0;
-    while (currIndex < argc)
-    {
-        // 拆分字符串
-        auto args = StringUtil::split(argv[currIndex], "=");
-        // 判断参数是否合法
-        if (args.size() != 2)
-        {
-            cout << "arg: " << argv[currIndex] << ", format error." << endl;
-            exit(1);
-        }
+	// 开始解析
+	int currIndex = 1;
+	int setDbParamNum = 0;
+	while (currIndex < argc)
+	{
+		// 拆分字符串
+		auto args = StringUtil::split(argv[currIndex], "=");
+		// 判断参数是否合法
+		if (args.size() != 2)
+		{
+			cout << "arg: " << argv[currIndex] << ", format error." << endl;
+			exit(1);
+		}
 
-        // 根据参数前缀对不同属性赋值
-        std::string prefix = args[0];
-        std::string val = args[1];
-        if (prefix == "sp") serverPort = val;
-        else if (prefix == "du")
-        {
-            setDbParamNum++;
-            dbUsername = val;
-        }
-        else if (prefix == "dp")
-        {
-            setDbParamNum++;
-            dbPassword = val;
-        }
-        else if (prefix == "dn")
-        {
-            setDbParamNum++;
-            dbName = val;
-        }
-        else if (prefix == "dh")
-        {
-            setDbParamNum++;
-            dbHost = val;
-        }
-        else if (prefix == "dP")
-        {
-            setDbParamNum++;
-            dbPort = atoi(val.c_str());
-        }
-        else if (prefix == "dm") dbMax = atoi(val.c_str());
-        // 更新索引
-        currIndex++;
-    }
+		// 根据参数前缀对不同属性赋值
+		std::string prefix = args[0];
+		std::string val = args[1];
+		if (prefix == "sp") serverPort = val;
+		else if (prefix == "du")
+		{
+			setDbParamNum++;
+			dbUsername = val;
+		}
+		else if (prefix == "dp")
+		{
+			setDbParamNum++;
+			dbPassword = val;
+		}
+		else if (prefix == "dn")
+		{
+			setDbParamNum++;
+			dbName = val;
+		}
+		else if (prefix == "dh")
+		{
+			setDbParamNum++;
+			dbHost = val;
+		}
+		else if (prefix == "dP")
+		{
+			setDbParamNum++;
+			dbPort = atoi(val.c_str());
+		}
+		else if (prefix == "dm") dbMax = atoi(val.c_str());
+		// 更新索引
+		currIndex++;
+	}
 
-    // 从配置中获取数据库配置
-    if (setDbParamNum < 5)
-    {
-        // 获取配置文件中的数据库配置
-        YAML::Node node = YAML::LoadFile("./conf/data-source.yaml");
-        // 解析配置信息
-        YamlHelper yaml;
-        std::string dbUrl = yaml.getString(&node, "spring.datasource.url");
-        if (dbUrl != "")
-        {
-            // 解析数据库连接字符串
-            yaml.parseDbConnUrl(dbUrl, &dbHost, &dbPort, &dbName);
-            // 获取数据库用户名和密码
-            dbUsername = dbUsername == "" ? yaml.getString(&node, "spring.datasource.username") : dbUsername;
-            dbPassword = dbPassword == "" ? yaml.getString(&node, "spring.datasource.password") : dbPassword;
-            dbMax = dbMax == -1 ? atoi(yaml.getString(&node, "spring.datasource.druid.max-active").c_str()) : dbMax;
-        }
-    }
+	// 从配置中获取数据库配置
+	if (setDbParamNum < 5)
+	{
+		// 获取配置文件中的数据库配置
+		YAML::Node node = YAML::LoadFile("./conf/data-source.yaml");
+		// 解析配置信息
+		YamlHelper yaml;
+		std::string dbUrl = yaml.getString(&node, "spring.datasource.url");
+		if (dbUrl != "")
+		{
+			// 解析数据库连接字符串
+			yaml.parseDbConnUrl(dbUrl, &dbHost, &dbPort, &dbName);
+			// 获取数据库用户名和密码
+			dbUsername = dbUsername == "" ? yaml.getString(&node, "spring.datasource.username") : dbUsername;
+			dbPassword = dbPassword == "" ? yaml.getString(&node, "spring.datasource.password") : dbPassword;
+			dbMax = dbMax == -1 ? atoi(yaml.getString(&node, "spring.datasource.druid.max-active").c_str()) : dbMax;
+		}
+	}
 
-    // 记录服务器配置到内存中方便使用
-    ServerInfo::getInstance().setServerPort(serverPort);
-    ServerInfo::getInstance().setDbUsername(dbUsername);
-    ServerInfo::getInstance().setDbPassword(dbPassword);
-    ServerInfo::getInstance().setDbName(dbName);
-    ServerInfo::getInstance().setDbHost(dbHost);
-    ServerInfo::getInstance().setDbPort(dbPort);
-    ServerInfo::getInstance().setDbMax(dbMax);
+	// 记录服务器配置到内存中方便使用
+	ServerInfo::getInstance().setServerPort(serverPort);
+	ServerInfo::getInstance().setDbUsername(dbUsername);
+	ServerInfo::getInstance().setDbPassword(dbPassword);
+	ServerInfo::getInstance().setDbName(dbName);
+	ServerInfo::getInstance().setDbHost(dbHost);
+	ServerInfo::getInstance().setDbPort(dbPort);
+	ServerInfo::getInstance().setDbMax(dbMax);
 }
 
 int main(int argc, char* argv[]) {
-    // 服务器参数初始化
-    parseServerArgs(argc, argv);
-    // 初始数据库连接
-    DbInit::initDbPool(DBConfig(
-        ServerInfo::getInstance().getDbUsername(), 
-        ServerInfo::getInstance().getDbPassword(), 
-        ServerInfo::getInstance().getDbName(),
-        ServerInfo::getInstance().getDbHost(),
-        ServerInfo::getInstance().getDbPort(), 
-        ServerInfo::getInstance().getDbMax()));
-    // 启动HTTP服务器
+	// 服务器参数初始化
+	parseServerArgs(argc, argv);
+	// 初始数据库连接
+	DbInit::initDbPool(DBConfig(
+		ServerInfo::getInstance().getDbUsername(), 
+		ServerInfo::getInstance().getDbPassword(), 
+		ServerInfo::getInstance().getDbName(),
+		ServerInfo::getInstance().getDbHost(),
+		ServerInfo::getInstance().getDbPort(), 
+		ServerInfo::getInstance().getDbMax()));
+	// 启动HTTP服务器
     HttpServer::startServer(ServerInfo::getInstance().getServerPort(),
         [=](Endpoints* doc, HttpRouter* router) {
             Router(doc, router).initRouter();
@@ -470,9 +470,9 @@ int main(int argc, char* argv[]) {
         [](std::shared_ptr<AbstractComponentReg>* o) {
             *o = std::make_shared<OtherComponent>();
         });
-    // 释放数据库连接
-    DbInit::releasePool();
-    return 0;
+	// 释放数据库连接
+	DbInit::releasePool();
+	return 0;
 }
 ```
 
@@ -620,175 +620,175 @@ target_link_libraries (${appName} nacos-cli yaml-cpp )
  * 前缀与真实值之间使用=分隔
  */
 void parseServerArgs(int argc, char* argv[]) {
-    // 服务器端口
-    std::string serverPort = "8090";
-    // 数据库连接信息
-    std::string dbUsername = "";
-    std::string dbPassword = "";
-    std::string dbName = "";
-    std::string dbHost = "";
-    int dbPort = -1;
-    int dbMax = -1;
+	// 服务器端口
+	std::string serverPort = "8090";
+	// 数据库连接信息
+	std::string dbUsername = "";
+	std::string dbPassword = "";
+	std::string dbName = "";
+	std::string dbHost = "";
+	int dbPort = -1;
+	int dbMax = -1;
 #ifdef LINUX
-    // Nacos配置参数
-    std::string nacosAddr = "";
-    std::string nacosNs = "";
-    std::string serviceName = "";
-    std::string regIp = "";
+	// Nacos配置参数
+	std::string nacosAddr = "";
+	std::string nacosNs = "";
+	std::string serviceName = "";
+	std::string regIp = "";
 #endif
 
-    // 开始解析
-    int currIndex = 1;
-    int setDbParamNum = 0;
-    while (currIndex < argc)
-    {
-        // 拆分字符串
-        auto args = StringUtil::split(argv[currIndex], "=");
-        // 判断参数是否合法
-        if (args.size() != 2)
-        {
-            cout << "arg: " << argv[currIndex] << ", format error." << endl;
-            exit(1);
-        }
+	// 开始解析
+	int currIndex = 1;
+	int setDbParamNum = 0;
+	while (currIndex < argc)
+	{
+		// 拆分字符串
+		auto args = StringUtil::split(argv[currIndex], "=");
+		// 判断参数是否合法
+		if (args.size() != 2)
+		{
+			cout << "arg: " << argv[currIndex] << ", format error." << endl;
+			exit(1);
+		}
 
-        // 根据参数前缀对不同属性赋值
-        std::string prefix = args[0];
-        std::string val = args[1];
-        if (prefix == "sp") serverPort = val;
-        else if (prefix == "du")
-        {
-            setDbParamNum++;
-            dbUsername = val;
-        }
-        else if (prefix == "dp")
-        {
-            setDbParamNum++;
-            dbPassword = val;
-        }
-        else if (prefix == "dn")
-        {
-            setDbParamNum++;
-            dbName = val;
-        }
-        else if (prefix == "dh")
-        {
-            setDbParamNum++;
-            dbHost = val;
-        }
-        else if (prefix == "dP")
-        {
-            setDbParamNum++;
-            dbPort = atoi(val.c_str());
-        }
-        else if (prefix == "dm") dbMax = atoi(val.c_str());
+		// 根据参数前缀对不同属性赋值
+		std::string prefix = args[0];
+		std::string val = args[1];
+		if (prefix == "sp") serverPort = val;
+		else if (prefix == "du")
+		{
+			setDbParamNum++;
+			dbUsername = val;
+		}
+		else if (prefix == "dp")
+		{
+			setDbParamNum++;
+			dbPassword = val;
+		}
+		else if (prefix == "dn")
+		{
+			setDbParamNum++;
+			dbName = val;
+		}
+		else if (prefix == "dh")
+		{
+			setDbParamNum++;
+			dbHost = val;
+		}
+		else if (prefix == "dP")
+		{
+			setDbParamNum++;
+			dbPort = atoi(val.c_str());
+		}
+		else if (prefix == "dm") dbMax = atoi(val.c_str());
 #ifdef LINUX
-        else if (prefix == "na") nacosAddr = val;
-        else if (prefix == "ns") nacosNs = val;
-        else if (prefix == "sn") serviceName = val;
-        else if (prefix == "ip") regIp = val;
+		else if (prefix == "na") nacosAddr = val;
+		else if (prefix == "ns") nacosNs = val;
+		else if (prefix == "sn") serviceName = val;
+		else if (prefix == "ip") regIp = val;
 #endif
-        // 更新索引
-        currIndex++;
-    }
+		// 更新索引
+		currIndex++;
+	}
 
-    // 从配置中获取数据库配置
-    if (setDbParamNum < 5)
-    {
+	// 从配置中获取数据库配置
+	if (setDbParamNum < 5)
+	{
 #ifdef LINUX
-        // 获取Nacos中的数据库配置
-        NacosClient nacosClient(nacosAddr, nacosNs);
-        YAML::Node node = nacosClient.getConfig("data-source.yaml");
+		// 获取Nacos中的数据库配置
+		NacosClient nacosClient(nacosAddr, nacosNs);
+		YAML::Node node = nacosClient.getConfig("data-source.yaml");
 #else
-        // 获取配置文件中的数据库配置
-        YAML::Node node = YAML::LoadFile("./conf/data-source.yaml");
+		// 获取配置文件中的数据库配置
+		YAML::Node node = YAML::LoadFile("./conf/data-source.yaml");
 #endif
-        // 解析配置信息
-        YamlHelper yaml;
-        std::string dbUrl = yaml.getString(&node, "spring.datasource.url");
-        if (dbUrl != "")
-        {
-            // 解析数据库连接字符串
-            yaml.parseDbConnUrl(dbUrl, &dbHost, &dbPort, &dbName);
-            // 获取数据库用户名和密码
-            dbUsername = dbUsername == "" ? yaml.getString(&node, "spring.datasource.username") : dbUsername;
-            dbPassword = dbPassword == "" ? yaml.getString(&node, "spring.datasource.password") : dbPassword;
-            dbMax = dbMax == -1 ? atoi(yaml.getString(&node, "spring.datasource.druid.max-active").c_str()) : dbMax;
-        }
-    }
+		// 解析配置信息
+		YamlHelper yaml;
+		std::string dbUrl = yaml.getString(&node, "spring.datasource.url");
+		if (dbUrl != "")
+		{
+			// 解析数据库连接字符串
+			yaml.parseDbConnUrl(dbUrl, &dbHost, &dbPort, &dbName);
+			// 获取数据库用户名和密码
+			dbUsername = dbUsername == "" ? yaml.getString(&node, "spring.datasource.username") : dbUsername;
+			dbPassword = dbPassword == "" ? yaml.getString(&node, "spring.datasource.password") : dbPassword;
+			dbMax = dbMax == -1 ? atoi(yaml.getString(&node, "spring.datasource.druid.max-active").c_str()) : dbMax;
+		}
+	}
 
-    // 记录服务器配置到内存中方便使用
-    ServerInfo::getInstance().setServerPort(serverPort);
-    ServerInfo::getInstance().setDbUsername(dbUsername);
-    ServerInfo::getInstance().setDbPassword(dbPassword);
-    ServerInfo::getInstance().setDbName(dbName);
-    ServerInfo::getInstance().setDbHost(dbHost);
-    ServerInfo::getInstance().setDbPort(dbPort);
-    ServerInfo::getInstance().setDbMax(dbMax);
+	// 记录服务器配置到内存中方便使用
+	ServerInfo::getInstance().setServerPort(serverPort);
+	ServerInfo::getInstance().setDbUsername(dbUsername);
+	ServerInfo::getInstance().setDbPassword(dbPassword);
+	ServerInfo::getInstance().setDbName(dbName);
+	ServerInfo::getInstance().setDbHost(dbHost);
+	ServerInfo::getInstance().setDbPort(dbPort);
+	ServerInfo::getInstance().setDbMax(dbMax);
 #ifdef LINUX
-    ServerInfo::getInstance().setNacosAddr(nacosAddr);
-    ServerInfo::getInstance().setNacosNs(nacosNs);
-    ServerInfo::getInstance().setRegIp(regIp);
-    ServerInfo::getInstance().setServiceName(serviceName);
+	ServerInfo::getInstance().setNacosAddr(nacosAddr);
+	ServerInfo::getInstance().setNacosNs(nacosNs);
+	ServerInfo::getInstance().setRegIp(regIp);
+	ServerInfo::getInstance().setServiceName(serviceName);
 #endif
 }
 
 int main(int argc, char* argv[]) {
-    // 服务器参数初始化
-    parseServerArgs(argc, argv);
-
+	// 服务器参数初始化
+	parseServerArgs(argc, argv);
+    
 #ifndef _RELEASE_DOC_
-    // 初始数据库连接
-    bool initConnPool = DbInit::initDbPool(DBConfig(
-        ServerInfo::getInstance().getDbUsername(),
-        ServerInfo::getInstance().getDbPassword(),
-        ServerInfo::getInstance().getDbName(),
-        ServerInfo::getInstance().getDbHost(),
-        ServerInfo::getInstance().getDbPort(),
-        ServerInfo::getInstance().getDbMax()));
-    if (!initConnPool) return -1;
+	// 初始数据库连接
+	bool initConnPool = DbInit::initDbPool(DBConfig(
+		ServerInfo::getInstance().getDbUsername(),
+		ServerInfo::getInstance().getDbPassword(),
+		ServerInfo::getInstance().getDbName(),
+		ServerInfo::getInstance().getDbHost(),
+		ServerInfo::getInstance().getDbPort(),
+		ServerInfo::getInstance().getDbMax()));
+	if (!initConnPool) return -1;
 #endif
 
 #ifdef LINUX
-    // 创建Nacos客户端对象
-    NacosClient nacosClient(
-        ServerInfo::getInstance().getNacosAddr(),
-        ServerInfo::getInstance().getNacosNs());
+	// 创建Nacos客户端对象
+	NacosClient nacosClient(
+		ServerInfo::getInstance().getNacosAddr(),
+		ServerInfo::getInstance().getNacosNs());
 
-    // 注册服务
-    if (!ServerInfo::getInstance().getServiceName().empty() && !ServerInfo::getInstance().getRegIp().empty())
-    {
-        nacosClient.registerInstance(
-            ServerInfo::getInstance().getRegIp(),
-            atoi(ServerInfo::getInstance().getServerPort().c_str()),
-            ServerInfo::getInstance().getServiceName());
-    }
+	// 注册服务
+	if (!ServerInfo::getInstance().getServiceName().empty() && !ServerInfo::getInstance().getRegIp().empty())
+	{
+		nacosClient.registerInstance(
+			ServerInfo::getInstance().getRegIp(),
+			atoi(ServerInfo::getInstance().getServerPort().c_str()),
+			ServerInfo::getInstance().getServiceName());
+	}
 #endif
 
-    // 启动HTTP服务器
-    HttpServer::startServer(ServerInfo::getInstance().getServerPort(),
-        [=](Endpoints* doc, HttpRouter* router) {
-            Router(doc, router).initRouter();
-        },
-        [](std::shared_ptr<AbstractComponentReg>* o) {
-            *o = std::make_shared<OtherComponent>();
-        });
+	// 启动HTTP服务器
+	HttpServer::startServer(ServerInfo::getInstance().getServerPort(),
+		[=](Endpoints* doc, HttpRouter* router) {
+			Router(doc, router).initRouter();
+		},
+		[](std::shared_ptr<AbstractComponentReg>* o) {
+			*o = std::make_shared<OtherComponent>();
+		});
 
 #ifndef _RELEASE_DOC_
-    // 释放数据库连接
-    DbInit::releasePool();
+	// 释放数据库连接
+	DbInit::releasePool();
 #endif
 
 #ifdef LINUX
-    // 反注册服务
-    if (!ServerInfo::getInstance().getServiceName().empty() && !ServerInfo::getInstance().getRegIp().empty())
-    {
-        nacosClient.deregisterInstance(
-            ServerInfo::getInstance().getRegIp(),
-            atoi(ServerInfo::getInstance().getServerPort().c_str()),
-            ServerInfo::getInstance().getServiceName());
-    }
+	// 反注册服务
+	if (!ServerInfo::getInstance().getServiceName().empty() && !ServerInfo::getInstance().getRegIp().empty())
+	{
+		nacosClient.deregisterInstance(
+			ServerInfo::getInstance().getRegIp(),
+			atoi(ServerInfo::getInstance().getServerPort().c_str()),
+			ServerInfo::getInstance().getServiceName());
+	}
 #endif
-    return 0;
+	return 0;
 }
 ```
 

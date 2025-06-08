@@ -20,13 +20,15 @@
 #include "Router.h"
 #include "ApiHelper.h"
 #include "space/SpaceMgrController.h"
-// å¦‚æœå®šä¹‰äº†å…³é—­Swaggeræ–‡æ¡£å®
+#include "CommunitySpaceMgr/SpaceController.h"
+#include "controller/communityvenue/CommunityVenueController.h"
+// Èç¹û¶¨ÒåÁË¹Ø±ÕSwaggerÎÄµµºê
 #ifdef CLOSE_SWAGGER_DOC
-// ç®€åŒ–ç»‘å®šæ§åˆ¶å™¨å®å®šä¹‰
+// ¼ò»¯°ó¶¨¿ØÖÆÆ÷ºê¶¨Òå
 #define ROUTER_SIMPLE_BIND(__CLASS__) \
 router->addController(__CLASS__::createShared())
 #else
-// ç®€åŒ–ç»‘å®šæ§åˆ¶å™¨å®å®šä¹‰
+// ¼ò»¯°ó¶¨¿ØÖÆÆ÷ºê¶¨Òå
 #define ROUTER_SIMPLE_BIND(__CLASS__) \
 BIND_CONTROLLER(docEndpoints, router, __CLASS__)
 #endif
@@ -40,6 +42,8 @@ Router::Router(Endpoints* docEndpoints, HttpRouter* router)
 void Router::initRouter()
 {
 	ROUTER_SIMPLE_BIND(SpaceMgrController);
+	ROUTER_SIMPLE_BIND(SpaceController);
+	ROUTER_SIMPLE_BIND(CommunityVenueController);
 }
 
 

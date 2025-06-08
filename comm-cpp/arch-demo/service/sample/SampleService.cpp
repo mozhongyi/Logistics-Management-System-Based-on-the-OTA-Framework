@@ -24,12 +24,12 @@
 
 SamplePageDTO::Wrapper SampleService::listAll(const SampleQuery::Wrapper& query)
 {
-	// æ„å»ºè¿”å›å¯¹è±¡
+	// ¹¹½¨·µ»Ø¶ÔÏó
 	auto pages = SamplePageDTO::createShared();
 	pages->pageIndex = query->pageIndex;
 	pages->pageSize = query->pageSize;
 
-	// æŸ¥è¯¢æ•°æ®æ€»æ¡æ•°
+	// ²éÑ¯Êı¾İ×ÜÌõÊı
 	SampleDAO dao;
 	uint64_t count = dao.count(query);
 	if (count <= 0)
@@ -37,11 +37,11 @@ SamplePageDTO::Wrapper SampleService::listAll(const SampleQuery::Wrapper& query)
 		return pages;
 	}
 
-	// åˆ†é¡µæŸ¥è¯¢æ•°æ®
+	// ·ÖÒ³²éÑ¯Êı¾İ
 	pages->total = count;
 	pages->calcPages();
 	list<SampleDO> result = dao.selectWithPage(query);
-	// å°†DOè½¬æ¢æˆDTO
+	// ½«DO×ª»»³ÉDTO
 	for (SampleDO sub : result)
 	{
 		auto dto = SampleDTO::createShared();
@@ -53,15 +53,15 @@ SamplePageDTO::Wrapper SampleService::listAll(const SampleQuery::Wrapper& query)
 
 SampleDTO::Wrapper SampleService::getById(std::string id)
 {
-	// æŸ¥è¯¢æ•°æ®
+	// ²éÑ¯Êı¾İ
 	SampleDAO dao;
 	auto res = dao.selectById(id);
 
-	// æ²¡æœ‰æŸ¥è¯¢åˆ°æ•°æ®
+	// Ã»ÓĞ²éÑ¯µ½Êı¾İ
 	if (!res)
 		return nullptr;
 
-	// æŸ¥è¯¢åˆ°æ•°æ®è½¬æ¢æˆDTO
+	// ²éÑ¯µ½Êı¾İ×ª»»³ÉDTO
 	auto dto = SampleDTO::createShared();
 	ZO_STAR_DOMAIN_DO_TO_DTO_1(dto, res, id, Id, name, Name, sex, Sex, age, Age);
 	return dto;
@@ -69,31 +69,31 @@ SampleDTO::Wrapper SampleService::getById(std::string id)
 
 std::string SampleService::saveData(const SampleAddDTO::Wrapper& dto)
 {
-	// ç»„è£…DOæ•°æ®
+	// ×é×°DOÊı¾İ
 	SampleDO data;
 	ZO_STAR_DOMAIN_DTO_TO_DO(data, dto, Name, name, Sex, sex, Age, age);
-	// ç”ŸæˆID
+	// Éú³ÉID
 	UuidFacade uf;
 	data.setId(uf.genUuid());
-	// è®¾ç½®åˆ›å»ºäºº
+	// ÉèÖÃ´´½¨ÈË
 	data.setCreateBy(dto->getPayload()->getUsername());
-	// è®¾ç½®åˆ›å»ºæ—¶é—´
+	// ÉèÖÃ´´½¨Ê±¼ä
 	data.setCreateTime(SimpleDateTimeFormat::format());
-	// æ‰§è¡Œæ•°æ®æ·»åŠ 
+	// Ö´ĞĞÊı¾İÌí¼Ó
 	SampleDAO dao;
 	return dao.insert(data) == 1 ? data.getId() : "";
 }
 
 bool SampleService::updateData(const SampleDTO::Wrapper& dto)
 {
-	// ç»„è£…DOæ•°æ®
+	// ×é×°DOÊı¾İ
 	SampleDO data;
 	ZO_STAR_DOMAIN_DTO_TO_DO(data, dto, Name, name, Sex, sex, Age, age, Id, id);
-	// è®¾ç½®ä¿®æ”¹äºº
+	// ÉèÖÃĞŞ¸ÄÈË
 	data.setUpdateBy(dto->getPayload()->getUsername());
-	// è®¾ç½®ä¿®æ”¹æ—¶é—´
+	// ÉèÖÃĞŞ¸ÄÊ±¼ä
 	data.setUpdateTime(SimpleDateTimeFormat::format());
-	// æ‰§è¡Œæ•°æ®ä¿®æ”¹
+	// Ö´ĞĞÊı¾İĞŞ¸Ä
 	SampleDAO dao;
 	return dao.update(data) == 1;
 }
@@ -101,21 +101,21 @@ bool SampleService::updateData(const SampleDTO::Wrapper& dto)
 bool SampleService::removeData(const oatpp::List<oatpp::String>& ids)
 {
 	SampleDAO dao;
-	// å¼€å¯äº‹åŠ¡
+	// ¿ªÆôÊÂÎñ
 	dao.getSqlSession()->beginTransaction();
-	// å¾ªç¯åˆ é™¤
+	// Ñ­»·É¾³ı
 	int rows = 0;
 	for (auto one : *ids.get())
 	{
 		rows += dao.deleteById(one.getValue({}));
 	}
-	// åˆ¤æ–­æ˜¯å¦å…¨éƒ¨åˆ é™¤æˆåŠŸ
+	// ÅĞ¶ÏÊÇ·ñÈ«²¿É¾³ı³É¹¦
 	if (rows == ids->size()) {
-        // æäº¤äº‹åŠ¡
+        // Ìá½»ÊÂÎñ
 		dao.getSqlSession()->commitTransaction();
 		return true;
 	}
-	// å›æ»šäº‹åŠ¡
+	// »Ø¹öÊÂÎñ
 	dao.getSqlSession()->rollbackTransaction();
 	return false;
 }

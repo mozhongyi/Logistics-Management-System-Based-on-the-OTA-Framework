@@ -39,20 +39,20 @@ int SqlSession::update(const string& sql, const char* fmt, va_list args)
 	try
 	{
 		NULL_PTR_CHECK(conn, "connection is null");
-		//1 鑾峰彇prepareStatement瀵硅薄
+		//1 获取prepareStatement对象
 		pstmt = conn->prepareStatement(sql);
-		//2 澶勭悊鍙傛暟
+		//2 处理参数
 		std::string curr(fmt);
 		SQL_ARG_EXEC_1(pstmt, curr, args);
-		//3 鎵ц鏁版嵁鎿嶄綔
+		//3 执行数据操作
 		int row = pstmt->executeUpdate();
-		//4 閲婃斁State
+		//4 释放State
 		releasePreparedStatement();
 		return row;
 	}
 	catch (const std::exception& e)
 	{
-		//4 閲婃斁State
+		//4 释放State
 		releasePreparedStatement();
 		cerr << "ExecuteUpdate Exception. " << e.what() << endl;
 	}
@@ -65,13 +65,13 @@ SqlSession::SqlSession()
 	this->pstmt = NULL;
 	this->stmt = NULL;
 	this->res = NULL;
-	//璁剧疆缂栫爜
+	//设置编码
 	this->setCharset("utf8");
 }
 
 SqlSession::~SqlSession()
 {
-	//鏋愭瀯閲婃斁杩炴帴瀵硅薄
+	//析构释放连接对象
 	DbInit::getConnPool()->ReleaseConnection(conn);
 }
 
@@ -113,20 +113,20 @@ int SqlSession::executeUpdate(const string& sql, const SqlParams& params)
 	try
 	{
 		NULL_PTR_CHECK(conn, "connection is null");
-		//1 鑾峰彇prepareStatement瀵硅薄
+		//1 获取prepareStatement对象
 		pstmt = conn->prepareStatement(sql);
-		//2 澶勭悊鍙傛暟
+		//2 处理参数
 		SQL_ARG_EXEC_3(params, pstmt);
-		//3 鎵ц鏁版嵁鎿嶄綔
+		//3 执行数据操作
 		int row = pstmt->executeUpdate();
-		//4 閲婃斁State
+		//4 释放State
 		releasePreparedStatement();
 		return row;
 	}
 	catch (const std::exception& e)
 	{
 		cerr << "ExecuteUpdate Exception. " << e.what() << endl;
-		//4 閲婃斁State
+		//4 释放State
 		releasePreparedStatement();
 	}
 	return 0;
@@ -134,13 +134,13 @@ int SqlSession::executeUpdate(const string& sql, const SqlParams& params)
 
 uint64_t SqlSession::executeInsert(const string& sql, const char* fmt, ...)
 {
-	//鎵ц鏁版嵁鎻掑叆
+	//执行数据插入
 	va_list args;
 	va_start(args, fmt);
 	int row = update(sql, fmt, args);
 	va_end(args);
 
-	//鑾峰彇涓婚敭ID
+	//获取主键ID
 	uint64_t id = 0;
 	if (row == 1)
 	{
@@ -173,10 +173,10 @@ uint64_t SqlSession::executeInsert(const string& sql)
 
 uint64_t SqlSession::executeInsert(const string& sql, const SqlParams& params)
 {
-	//鎵ц鏁版嵁鎻掑叆
+	//执行数据插入
 	int row = executeUpdate(sql, params);
 
-	//鑾峰彇涓婚敭ID
+	//获取主键ID
 	uint64_t id = 0;
 	if (row == 1)
 	{
@@ -208,23 +208,23 @@ uint64_t SqlSession::executeQueryNumerical(const string& sql, const char* fmt, .
 	try
 	{
 		NULL_PTR_CHECK(conn, "connection is null");
-		//1 鑾峰彇prepareStatement瀵硅薄
+		//1 获取prepareStatement对象
 		pstmt = conn->prepareStatement(sql);
-		//2 澶勭悊鍙傛暟
+		//2 处理参数
 		SQL_ARG_EXEC_2(pstmt, fmt);
-		//3 鎵ц鏌ヨ
+		//3 执行查询
 		res = pstmt->executeQuery();
-		//4 澶勭悊鏌ヨ缁撴灉
+		//4 处理查询结果
 		if (res->next()) {
 			result = res->getUInt64(1);
 		}
-		//5 閲婃斁璧勬簮
+		//5 释放资源
 		releaseResultSet();
 		releasePreparedStatement();
 	}
 	catch (const std::exception& e)
 	{
-		//5 閲婃斁璧勬簮
+		//5 释放资源
 		releaseResultSet();
 		releasePreparedStatement();
 		cerr << "ExecuteQuery Exception. " << e.what() << endl;
@@ -243,13 +243,13 @@ uint64_t SqlSession::executeQueryNumerical(const string& sql, const SqlParams& p
 	TryFinally(
 		[&] {
 			NULL_PTR_CHECK(conn, "connection is null");
-			//1 鑾峰彇prepareStatement瀵硅薄
+			//1 获取prepareStatement对象
 			pstmt = conn->prepareStatement(sql);
-			//2 澶勭悊鍙傛暟
+			//2 处理参数
 			SQL_ARG_EXEC_3(params, pstmt);
-			//3 鎵ц鏌ヨ
+			//3 执行查询
 			res = pstmt->executeQuery();
-			//4 澶勭悊鏌ヨ缁撴灉
+			//4 处理查询结果
 			if (res->next()) {
 				result = res->getUInt64(1);
 			}
@@ -258,7 +258,7 @@ uint64_t SqlSession::executeQueryNumerical(const string& sql, const SqlParams& p
 			cerr << "ExecuteQuery Exception. " << e.what() << endl;
 		},
 		[=] {
-			//4 閲婃斁璧勬簮
+			//4 释放资源
 			releaseResultSet();
 			releasePreparedStatement();
 		}

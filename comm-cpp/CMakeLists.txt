@@ -171,4 +171,7 @@ endif()
 #add_subdirectory ("arch-demo")
 # 在后面添加你的模块
 add_subdirectory ("comm-c3-sitemanagement")
-
+add_subdirectory ("comm-c3-expensesetting")
+add_subdirectory ("comm-c3-reservationorder")
+add_subdirectory ("comm-c3-housefee")
+add_subdirectory ("comm-c3-venuereservations")
